@@ -11,11 +11,7 @@ def create_leads_table(cur):
         IRR                    DECIMAL(10,2),
         Selling_Reason         LONGTEXT,
         Seller_Retained_Broker LONGTEXT,
-        Final_Reviewer         LONGTEXT,
-        FOREIGN KEY (property_id)
-            REFERENCES home_db.raw_property(raw_id)
-            ON DELETE CASCADE
-            ON UPDATE CASCADE
+        Final_Reviewer         LONGTEXT
     );""")
 def insert_into_leads(cur):
     cur.execute("""
@@ -42,7 +38,11 @@ def insert_into_leads(cur):
         JSON_UNQUOTE(JSON_EXTRACT(raw_json, '$.Selling_Reason'))        AS Selling_Reason,
         JSON_UNQUOTE(JSON_EXTRACT(raw_json, '$.Seller_Retained_Broker')) AS Seller_Retained_Broker,
         JSON_UNQUOTE(JSON_EXTRACT(raw_json, '$.Final_Reviewer'))        AS Final_Reviewer
-    FROM home_db.raw_property;""")
+    FROM home_db.raw_property rp
+    WHERE NOT EXISTS (
+        SELECT 1 FROM home_db.leads l WHERE l.property_id = rp.raw_id
+    );
+    """)
 def main():
     conn = get_connection()
     cur = conn.cursor()

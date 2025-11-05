@@ -117,8 +117,11 @@ SELECT
     JSON_UNQUOTE(JSON_EXTRACT(raw_json, '$.Subdivision'))          AS Subdivision,
     CAST(JSON_UNQUOTE(JSON_EXTRACT(raw_json, '$.School_Average')) AS DECIMAL(10,2)) AS School_Average
 
-FROM home_db.raw_property;
-""")
+FROM home_db.raw_property rp
+WHERE NOT EXISTS (
+    SELECT 1 FROM home_db.property p WHERE p.property_id = rp.raw_id
+);
+    """)
 
 def main():
     conn = get_connection()

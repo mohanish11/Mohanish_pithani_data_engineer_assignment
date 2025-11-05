@@ -12,13 +12,9 @@ def create_valuation_table(cur):
     Rent_Zestimate DECIMAL(10,2),
     Low_FMR DECIMAL(10,2),
     High_FMR DECIMAL(10,2),
-    Redfin_Value DECIMAL(10,2),
-    FOREIGN KEY (property_id)
-        REFERENCES home_db.raw_property(raw_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-    )""")
+    Redfin_Value DECIMAL(10,2)s)""")
 def insert_into_valuation(cur):
+    cur.execute("TRUNCATE TABLE home_db.valuation;")
     cur.execute("""
     INSERT INTO home_db.valuation (
     property_id,

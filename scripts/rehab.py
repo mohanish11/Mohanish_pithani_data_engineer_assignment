@@ -16,14 +16,10 @@ def create_rehab_table(cur):
     Appliances_Flag VARCHAR(10),
     Windows_Flag VARCHAR(10),
     Landscaping_Flag VARCHAR(10),
-    Trashout_Flag VARCHAR(10),
-    FOREIGN KEY (property_id)
-        REFERENCES home_db.raw_property(raw_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-   );
+    Trashout_Flag VARCHAR(10));
     """)
 def insert_into_rehab(cur):
+    cur.execute("TRUNCATE TABLE home_db.rehab;")
     cur.execute("""
                INSERT INTO home_db.rehab (
     property_id,

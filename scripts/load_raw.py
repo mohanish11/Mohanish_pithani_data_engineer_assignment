@@ -23,7 +23,7 @@ def main():
     with open(JSON_PATH, "r") as f:
         text = f.read().strip()
     data = json.loads(text) if text.startswith("[") else [json.loads(line) for line in text.splitlines()]
-
+    cur.execute("TRUNCATE TABLE home_db.raw_property;")
     cur.executemany(
         "INSERT INTO raw_property (raw_json, source_file) VALUES (%s, %s)",
         [(json.dumps(d), os.path.basename(JSON_PATH)) for d in data]
