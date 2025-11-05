@@ -12,7 +12,7 @@ def create_valuation_table(cur):
     Rent_Zestimate DECIMAL(10,2),
     Low_FMR DECIMAL(10,2),
     High_FMR DECIMAL(10,2),
-    Redfin_Value DECIMAL(10,2)s)""")
+    Redfin_Value DECIMAL(10,2))""")
 def insert_into_valuation(cur):
     cur.execute("TRUNCATE TABLE home_db.valuation;")
     cur.execute("""
