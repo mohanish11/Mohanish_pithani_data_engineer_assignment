@@ -1,0 +1,18 @@
+# Minimal .gitignore — only ignore files/folders present in this repo
+
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+
+# macOS
+.DS_Store
+
+# Local environment files
+.env
+
+# Compiled DB or log files
+*.db
+*.log

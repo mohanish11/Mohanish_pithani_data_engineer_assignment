@@ -89,13 +89,99 @@ For MySQL Docker image reference:
 
 ## Solutions and Instructions (Filed by Candidate)
 
-**Document your database design and solution here:**
+### Database Design
 
-- Explain your schema and any design decisions
-- Give clear instructions on how to run and test your script
+The database schema has been normalized into several related tables to properly separate concerns and maintain data integrity:
 
-**Document your ETL logic here:**
+1. **Properties** - Core property information
+   - Primary entity containing basic property details
+   - Connected to other tables via foreign keys
 
-- Outline your approach and design
-- Provide instructions and code snippets for running the ETL
-- List any requirements
+2. **HOA** - Homeowners Association information
+   - Linked to properties via property_id
+   - Contains HOA-specific details
+
+3. **Leads** - Lead information for properties
+   - Connected to properties table
+   - Tracks lead-related data
+
+4. **Taxes** - Property tax information
+   - Tax details linked to specific properties
+   - Historical tax information
+
+5. **Rehab** - Rehabilitation estimates and details
+   - Connected to properties
+   - Contains renovation and repair estimates
+
+6. **Valuation** - Property valuation data
+   - Linked to properties
+   - Contains various valuation metrics
+
+Each table uses appropriate data types and includes necessary constraints for data integrity.
+
+### ETL Pipeline Design
+
+The ETL pipeline is designed to run in parallel for optimal performance while maintaining data dependencies:
+
+1. **Initial Data Load** (`load_raw.py`)
+   - Reads the raw JSON data
+   - Performs initial validation
+   - Must run first
+
+2. **Parallel Processing** (runs after initial load):
+   - `property.py` - Processes core property data
+   - `hoa.py` - Extracts and transforms HOA information
+   - `leads.py` - Processes lead data
+   - `taxes.py` - Handles tax information
+   - `rehab.py` - Processes rehabilitation data
+   - `valuation.py` - Handles valuation information
+
+### Running the Solution
+
+1. **Setup Environment:**
+   ```bash
+   # Create and activate virtual environment
+   python3 -m venv venv
+   source venv/bin/activate
+
+   # Install dependencies
+   pip install -r requirements.txt
+   ```
+
+2. **Start the Database:**
+   ```bash
+   docker-compose -f docker-compose.initial.yml up --build -d
+   ```
+
+3. **Run the ETL Pipeline:**
+   ```bash
+   python run_etl.py
+   ```
+
+The ETL process will:
+- First run the initial data load
+- Then process all other transformations in parallel
+- Log progress and any errors
+- Show execution time
+
+### Requirements
+
+- Python 3.8 or higher
+- Docker and Docker Compose
+- Required Python packages (specified in requirements.txt):
+   - mysql-connector-python
+
+### Monitoring and Validation
+
+- Check the logs for execution progress
+- Each script logs its own progress
+- Failed scripts are reported with specific error messages
+- The pipeline stops if the initial load fails
+- Parallel processing errors are captured and reported
+
+### Error Handling
+
+- Each script includes error handling and logging
+- Database connection issues are properly handled
+- Data validation errors are logged with details
+- The pipeline reports overall success/failure status

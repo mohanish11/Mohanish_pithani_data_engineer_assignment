@@ -1,4 +1,7 @@
-services: 
+version: '3.8'
+
+services:
+  # Your existing MySQL service
   mysql_ctn:
     build:
       context: .
@@ -12,10 +15,14 @@ services:
     volumes:
       - mysql_vol:/var/lib/mysql:rw
     ports:
-      - 3306:3306
+      - "3306:3306"
     networks:
       - app_net
-
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "$${MYSQL_USER}", "-p$${MYSQL_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 networks:
   app_net:
 
